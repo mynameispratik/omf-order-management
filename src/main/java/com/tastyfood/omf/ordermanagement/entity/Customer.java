@@ -1,15 +1,19 @@
 package com.tastyfood.omf.ordermanagement.entity;
 
-import java.sql.Timestamp;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,39 +22,27 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-public class Customer extends BaseEntity{
+public class Customer {
 
-    /**
-	 * @param id
-	 * @param version
-	 * @param createdDate
-	 * @param lastModifiedDate
-	 * @param apiKey
-	 * @param customerName
-	 * @param customerLocation
-	 * @param foodOrders
-	 */
-	@Builder
-	public Customer(UUID id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, UUID apiKey,
-			String customerName, String customerLocation, Set<FoodOrder> foodOrders) {
-		super(id, version, createdDate, lastModifiedDate);
-		this.apiKey = apiKey;
-		this.customerName = customerName;
-		this.customerLocation = customerLocation;
-		this.foodOrders = foodOrders;
-	}
+	@Id
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@Type(type = "org.hibernate.type.UUIDCharType")
+	@Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
+	private UUID customerId;
 
-
-
-	@Type(type="org.hibernate.type.UUIDCharType")
-    @Column(length = 36, columnDefinition = "varchar(36)")
-    private UUID apiKey;
-    
 	private String customerName;
-	
+
+	private String customerEmail;
+
 	private String customerLocation;
 
-    @OneToMany(mappedBy = "customer")
-    private Set<FoodOrder> foodOrders;
+	@OneToMany(mappedBy = "customer")
+	private Set<FoodOrder> foodOrders;
+	
+	@OneToOne(mappedBy = "customer")
+	private Wallet wallet;
 }

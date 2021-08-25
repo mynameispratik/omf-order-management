@@ -1,12 +1,12 @@
 package com.tastyfood.omf.ordermanagement.entity;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,28 +18,32 @@ import lombok.ToString;
 @ToString
 @Entity
 public class FoodOrderLine extends BaseEntity {
-	@ManyToOne
-    private FoodOrder foodOrder;
+	
+	
 
     private UUID cuisineId;
+    
+    private String cuisineName;
 
     private Integer orderQuantity = 0;
+    
+    private BigDecimal price;
 
-	/**
-	 * @param id
-	 * @param version
-	 * @param createdDate
-	 * @param lastModifiedDate
-	 * @param foodOrder
-	 * @param cuisineId
-	 * @param orderQuantity
-	 */
-    @Builder
-	public FoodOrderLine(UUID id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, FoodOrder foodOrder,
-			UUID cuisineId, Integer orderQuantity) {
+    @ManyToOne
+    private FoodOrder foodOrder;
+
+	public FoodOrderLine(UUID id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, UUID cuisineId,
+			String cuisineName, Integer orderQuantity, BigDecimal price, FoodOrder foodOrder) {
 		super(id, version, createdDate, lastModifiedDate);
-		this.foodOrder = foodOrder;
 		this.cuisineId = cuisineId;
+		this.cuisineName = cuisineName;
 		this.orderQuantity = orderQuantity;
+		this.price = price;
+		this.foodOrder = foodOrder;
 	}
+    
+    
+	
+
+	
 }

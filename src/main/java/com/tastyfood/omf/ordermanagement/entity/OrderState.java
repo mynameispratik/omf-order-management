@@ -1,0 +1,6 @@
+package com.tastyfood.omf.ordermanagement.entity;
+
+public enum OrderState {
+	NEW, VALIDATED, VALIDATION_PENDING, VALIDATION_EXCEPTION,
+	PAYMENT_PENDING,PAID,PAYMENT_EXCEPTION, ALLOCATED,CANCELLED
+}
