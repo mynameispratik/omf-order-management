@@ -11,9 +11,11 @@ import com.tastyfood.omf.ordermanagement.dto.FoodOrderDto;
 import com.tastyfood.omf.ordermanagement.entity.Customer;
 import com.tastyfood.omf.ordermanagement.entity.FoodOrder;
 import com.tastyfood.omf.ordermanagement.entity.FoodOrderLine;
+import com.tastyfood.omf.ordermanagement.entity.Wallet;
 import com.tastyfood.omf.ordermanagement.mapper.FoodOrderMapper;
 import com.tastyfood.omf.ordermanagement.repository.CustomerRepository;
 import com.tastyfood.omf.ordermanagement.repository.FoodOrderRepository;
+import com.tastyfood.omf.ordermanagement.repository.WalletRepository;
 import com.tastyfood.omf.ordermanagement.service.FoodOrderService;
 
 import lombok.AllArgsConstructor;
@@ -27,6 +29,7 @@ public class FoodOrderServiceImpl implements FoodOrderService {
 	private final FoodOrderRepository foodOrderRepository;
 	private final CustomerRepository customerRepository;
 	private final FoodOrderMapper foodOrderMapper;
+	private final WalletRepository  walletRepository;
 
 	@Override
 	public FoodOrderDto placeOrder(FoodOrderDto foodOrderDto, UUID customerId) {
@@ -35,8 +38,14 @@ public class FoodOrderServiceImpl implements FoodOrderService {
 		if (optionalCustomer.isPresent()) {
 			log.info("User exists for ID: " + customerId.toString());
 			Double totalPrice =  calculatePrice(foodOrderDto);
+			Wallet wallet =optionalCustomer.get().getWallet();
 			
-			
+			if(wallet.getBalance().doubleValue()>totalPrice) {
+			wallet.getBalance().subtract(new BigDecimal(totalPrice));
+			walletRepository.save(wallet);
+			}else {
+				//exception
+			}
 			
 			FoodOrder foodOrder = foodOrderMapper.foodOrderDtoToFoodOrder(foodOrderDto);
 			foodOrder.setCustomer(optionalCustomer.get());
